@@ -32,7 +32,51 @@ const observer = new IntersectionObserver(entries=>{
   entries.forEach(e=>{if(e.isIntersecting){typeLetter();observer.disconnect();}});
 },{threshold:.25});
 observer.observe($("#letter"));
+// Countdown: September 9 at 12:00 AM Nepal Time
+function nextBirthday() {
+  const now = new Date();
 
+  let year = now.getUTCFullYear();
+
+  // Nepal Time = UTC + 5 hours 45 minutes
+  // September 9, 00:00 Nepal Time = September 8, 18:15 UTC
+  let target = new Date(Date.UTC(year, 8, 8, 18, 15, 0));
+
+  // If this year's birthday has already passed in Nepal,
+  // countdown to next year's September 9.
+  if (now >= target) {
+    target = new Date(Date.UTC(year + 1, 8, 8, 18, 15, 0));
+  }
+
+  return target;
+}
+
+let target = nextBirthday();
+
+function updateCountdown() {
+  const now = new Date();
+
+  // When countdown reaches zero, automatically prepare for next year
+  if (now >= target) {
+    target = nextBirthday();
+  }
+
+  const diff = target - now;
+
+  const d = Math.floor(diff / 86400000);
+  const h = Math.floor(diff / 3600000) % 24;
+  const m = Math.floor(diff / 60000) % 60;
+  const s = Math.floor(diff / 1000) % 60;
+
+  $("#days").textContent = String(d).padStart(2, "0");
+  $("#hours").textContent = String(h).padStart(2, "0");
+  $("#minutes").textContent = String(m).padStart(2, "0");
+  $("#seconds").textContent = String(s).padStart(2, "0");
+}
+
+updateCountdown();
+setInterval(updateCountdown, 1000);
+/*
 // Countdown: next September 9
 function nextBirthday(){
   const now = new Date();
@@ -56,7 +100,7 @@ function updateCountdown(){
   $("#seconds").textContent=String(s).padStart(2,"0");
 }
 updateCountdown();setInterval(updateCountdown,1000);
-
+*/
 // Gallery / fullscreen
 const photos=$$(".photo-card");
 let current=0;
